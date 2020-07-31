@@ -24,11 +24,17 @@ golangci-lint run
 
 ## Install
 To install the golangspell-redis spell use the command
+
+```sh
 golangspell addspell github.com/golangspell/golangspell-redis golangspell-redis
+```
 
 ## Update
 To update the golangspell-redis version use the command
+
+```sh
 golangspell updatespell github.com/golangspell/golangspell-redis golangspell-redis
+```
 
 ## Usage
 Go to the project root and run the command:
