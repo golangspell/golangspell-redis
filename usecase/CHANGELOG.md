@@ -9,5 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.0.1] - 2020-07-31
 
+### Changed
+-  Adjusted template imports
+
+## [0.0.1] - 2020-07-31
+
 ### Added
 -  Spell Redis first tag with redisinit command
