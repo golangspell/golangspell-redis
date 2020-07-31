@@ -1,0 +1,65 @@
+package redis
+
+import (
+	"errors"
+	"log"
+	"time"
+
+	"{{.ModuleName}}/domain"
+
+	"github.com/go-redis/redis/v7"
+	"{{.ModuleName}}/appcontext"
+	"{{.ModuleName}}/config"
+)
+
+//RedisClient is a wrapper for go-redis Client 
+type RedisClient struct {
+	client *redis.Client
+}
+
+// Set a value for a key, with the provided expiration time
+//
+// Use expiration for `SETEX`-like behavior.
+// Zero expiration means the key has no expiration time.
+func (c *RedisClient) Set(key string, value string, expiration time.Duration) error {
+	logger := config.GetLogger
+	defer logger().Sync()
+	err := c.client.Set(key, value, expiration).Err()
+	if err != nil {
+		msg := "Could not set a value for the specified key on cache. Message: " + err.Error()
+		logger().Error(msg)
+		return domain.InternalError(msg)
+	}
+	return nil
+}
+
+// Get a value stored for an specific key
+func (c *RedisClient) Get(key string) (string, error) {
+	logger := config.GetLogger
+	defer logger().Sync()
+	value, err := c.client.Get(key).Result()
+	if err != nil {
+		msg := "Could not get a value for the specified key from cache. Message: " + err.Error()
+		logger().Error(msg)
+		return "", domain.InternalError(msg)
+	}
+	return value, nil
+}
+
+func createRedisClient() appcontext.Component {
+	return &RedisClient{
+		client: redis.NewClient(&redis.Options{
+			Network:  "tcp",
+			Addr:     config.Values.RedisAddress,
+			Password: config.Values.RedisPassword,
+		}),
+	}
+}
+
+func init() {
+	if config.Values.TestRun {
+		return
+	}
+
+	appcontext.Current.Add(appcontext.Cache, createRedisClient)
+}

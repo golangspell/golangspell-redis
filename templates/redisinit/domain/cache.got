@@ -1,0 +1,18 @@
+package domain
+
+import (
+	"time"
+
+	"{{.ModuleName}}/appcontext"
+)
+
+//Cache infrastructure for keeping TTL limited information
+type Cache interface {
+	Set(key string, value string, expiration time.Duration) error
+	Get(key string) (string, error)
+}
+
+//GetCache returns the current cache implementation available in the application context
+func GetCache() Cache {
+	return appcontext.Current.Get(appcontext.Cache).(Cache)
+}

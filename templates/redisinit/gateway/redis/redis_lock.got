@@ -1,0 +1,48 @@
+package redis
+
+import (
+	"time"
+
+	"github.com/bsm/redislock"
+	"{{.ModuleName}}/appcontext"
+	"{{.ModuleName}}/config"
+	"{{.ModuleName}}/domain"
+)
+
+//RedisLock is a wrapper for bsm/redislock Client
+type RedisLock struct {
+	client *redislock.Client
+}
+
+//ObtainLock with the specified properties on Redis
+func (r *RedisLock) ObtainLock(key string, duration time.Duration) (domain.Lock, error) {
+	logger := config.GetLogger
+	defer logger().Sync()
+	locker := r.client
+
+	lock, err := locker.Obtain(key, duration, &redislock.Options{
+		RetryStrategy: redislock.ExponentialBackoff(100*time.Millisecond, 3200*time.Millisecond),
+	})
+	if err != nil {
+		msg := "Could not obtain lock. Message: " + err.Error()
+		logger().Error(msg)
+		return nil, domain.InternalError(msg)
+	}
+
+	return lock, nil
+}
+
+func createRedisLock() appcontext.Component {
+	redisClient := appcontext.Current.Get(appcontext.Cache).(*RedisClient)
+	return &RedisLock{
+		client: redislock.New(redisClient.client),
+	}
+}
+
+func init() {
+	if config.Values.TestRun {
+		return
+	}
+
+	appcontext.Current.Add(appcontext.Lock, createRedisLock)
+}
