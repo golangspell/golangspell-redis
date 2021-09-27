@@ -17,3 +17,6 @@
 
 # Temp
 .DS_Store
+
+# Executable
+golangspell-redis
