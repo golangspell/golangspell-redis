@@ -4,8 +4,6 @@ Plugin with the Golang Spell commands for adding Redis capabilities to the proje
 ## Golang Spell
 The Core project contains the core commands (and the respective templates) of the platform [Golang Spell](https://github.com/golangspell/golangspell).
 
-![alt text](https://golangspell.com/golangspell/blob/master/img/gopher_spell.png?raw=true)
-
 ## Test and coverage
 
 Run the tests
