@@ -103,3 +103,7 @@ For getting a value from the cache follow this example:
 
     logger().Infof("My cache value is: %s", value)
 ```
+
+<p align="center">
+    <img src="https://github.com/golangspell/golangspell/blob/master/img/gopher_spell.png" width="350" alt="Golang Spell logo"/>
+</p>
