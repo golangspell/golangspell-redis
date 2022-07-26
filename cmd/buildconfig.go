@@ -5,6 +5,7 @@ import (
 
 	"encoding/json"
 
+	"github.com/golangspell/golangspell-redis/config"
 	"github.com/golangspell/golangspell/domain"
 	"github.com/spf13/cobra"
 )
@@ -23,8 +24,9 @@ func runBuildConfigCommand(cmd *cobra.Command, args []string) {
 
 func buildSpellConfig() domain.Spell {
 	return domain.Spell{
-		Name: "golangspell-redis",
-		URL:  "github.com/golangspell/golangspell-redis",
+		Name:    "golangspell-redis",
+		URL:     "github.com/golangspell/golangspell-redis",
+		Version: config.Version,
 		Commands: map[string]*domain.Command{
 			"build-config": &domain.Command{
 				Name:             "build-config",
