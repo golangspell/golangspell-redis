@@ -4,8 +4,8 @@ github.com/cpuguy83/go-md2man/v2 v2.0.2/go.mod h1:tgQtvFlXSQOSOSIRvRPT7W67SCa46t
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/golangspell/golangspell v0.4.5 h1:CNY9W9/sSk7HCTLNu5Z+r8lg3eTWsZQkYsXcPFi3Wuk=
-github.com/golangspell/golangspell v0.4.5/go.mod h1:oqTJineJaJRmUzp6wby+OKTF5+EFwWmcbxbey7/E1W4=
+github.com/golangspell/golangspell v0.4.6 h1:H5geSXkSs/F0cR72EogKut1xbo14i0a028/JahkuBeU=
+github.com/golangspell/golangspell v0.4.6/go.mod h1:oqTJineJaJRmUzp6wby+OKTF5+EFwWmcbxbey7/E1W4=
 github.com/inconshreveable/mousetrap v1.0.0 h1:Z8tu5sraLXCXIcARxBp/8cbvlwVa7Z1NHg9XEKhtSvM=
 github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANytuPF1OarO4DADm73n8=
 github.com/kr/pretty v0.1.0 h1:L/CwN0zerZDmRFUapSPitk6f+Q3+0za1rQkzVuMiMFI=
