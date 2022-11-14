@@ -5,7 +5,7 @@ import (
 
 	"{{.ModuleName}}/domain"
 
-	"github.com/go-redis/redis/v7"
+	"github.com/go-redis/redis/v9"
 	"{{.ModuleName}}/appcontext"
 	"{{.ModuleName}}/config"
 )
@@ -22,7 +22,9 @@ type RedisClient struct {
 func (c *RedisClient) Set(key string, value string, expiration time.Duration) error {
 	logger := config.GetLogger
 	defer logger().Sync()
-	err := c.client.Set(key, value, expiration).Err()
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	err := c.client.Set(ctx, key, value, expiration).Err()
 	if err != nil {
 		msg := "Could not set a value for the specified key on cache. Message: " + err.Error()
 		logger().Error(msg)
@@ -35,7 +37,9 @@ func (c *RedisClient) Set(key string, value string, expiration time.Duration) er
 func (c *RedisClient) Get(key string) (string, error) {
 	logger := config.GetLogger
 	defer logger().Sync()
-	value, err := c.client.Get(key).Result()
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	value, err := c.client.Get(ctx, key).Result()
 	if err != nil {
 		msg := "Could not get a value for the specified key from cache. Message: " + err.Error()
 		logger().Error(msg)

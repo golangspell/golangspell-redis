@@ -18,9 +18,11 @@ type RedisLock struct {
 func (r *RedisLock) ObtainLock(key string, duration time.Duration) (domain.Lock, error) {
 	logger := config.GetLogger
 	defer logger().Sync()
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
 	locker := r.client
 
-	lock, err := locker.Obtain(key, duration, &redislock.Options{
+	lock, err := locker.Obtain(ctx, key, duration, &redislock.Options{
 		RetryStrategy: redislock.ExponentialBackoff(100*time.Millisecond, 3200*time.Millisecond),
 	})
 	if err != nil {

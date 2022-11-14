@@ -13,7 +13,7 @@ type Locker interface {
 
 //Lock instance specification, returned by the method ObtainLock(key string, duration time.Duration) (Lock, error)
 type Lock interface {
-	Release() error
+	Release(ctx context.Context) error
 }
 
 //GetLocker gets the current locker instance available in the application context

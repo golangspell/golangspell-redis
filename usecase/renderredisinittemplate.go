@@ -84,7 +84,7 @@ func addEnvironmentVariables(currentPath string) error {
 	code = strings.ReplaceAll(
 		code,
 		"func init() {\n",
-		"func init() {\n_ = viper.BindEnv(\"RedisAddress\", \"REDIS_ADDRESS\")\n_ = viper.BindEnv(\"RedisPassword\", \"REDIS_PASSWORD\")\n")
+		"func init() {\n Values.RedisAddress = GetEnv(\"REDIS_ADDRESS\", \"\")\n Values.RedisPassword = GetEnv(\"REDIS_PASSWORD\", \"\")\n")
 
 	err = ioutil.WriteFile(filePath, []byte(code), 0644)
 	if err != nil {
@@ -95,7 +95,7 @@ func addEnvironmentVariables(currentPath string) error {
 	return nil
 }
 
-//RenderredisinitTemplate renders the templates defined to the redisinit command with the proper variables
+// RenderredisinitTemplate renders the templates defined to the redisinit command with the proper variables
 func RenderredisinitTemplate(args []string) error {
 	spell := appcontext.Current.Get(appcontext.Spell).(tooldomain.Spell)
 	renderer := domain.GetRenderer()
