@@ -2,97 +2,30 @@ package usecase
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
-	"strings"
 
+	coreusecase "github.com/golangspell/golangspell-core/usecase"
 	"github.com/golangspell/golangspell-redis/appcontext"
 	"github.com/golangspell/golangspell-redis/domain"
 	toolconfig "github.com/golangspell/golangspell/config"
 	tooldomain "github.com/golangspell/golangspell/domain"
 )
 
-func addComponentConstantToContext(currentPath string, constantDefinition string) error {
-	filePath := fmt.Sprintf("%s%sappcontext%scontext.go", currentPath, toolconfig.PlatformSeparator, toolconfig.PlatformSeparator)
-	renderer := domain.GetRenderer()
-	err := renderer.BackupExistingCode(filePath)
-	if err != nil {
-		return fmt.Errorf("An error occurred while trying to backup the context file. Error: %s", err.Error())
-	}
-	content, err := ioutil.ReadFile(filePath)
-	if err != nil {
-		return fmt.Errorf("An error occurred while trying to read the context file. Error: %s", err.Error())
-	}
-	code := strings.ReplaceAll(
-		string(content),
-		"const (\n",
-		fmt.Sprintf("const (\n%s\n", constantDefinition))
-	err = ioutil.WriteFile(filePath, []byte(code), 0644)
-	if err != nil {
-		return fmt.Errorf("An error occurred while trying to update the context file. Error: %s", err.Error())
-	}
-
-	return nil
+func addComponentConstantToContext(currentPath string, componentName string) error {
+	return coreusecase.GetAddComponentConstantToContext().Execute(currentPath, componentName)
 }
 
-func addImportToMain(currentPath string, importPath string) error {
-	filePath := fmt.Sprintf("%s%smain.go", currentPath, toolconfig.PlatformSeparator)
-	renderer := domain.GetRenderer()
-	err := renderer.BackupExistingCode(filePath)
-	if err != nil {
-		return fmt.Errorf("An error occurred while trying to backup the main file. Error: %s", err.Error())
-	}
-	content, err := ioutil.ReadFile(filePath)
-	if err != nil {
-		return fmt.Errorf("An error occurred while trying to read the main file. Error: %s", err.Error())
-	}
-
-	if strings.Contains(string(content), importPath) {
-		return nil
-	}
-
-	code := strings.ReplaceAll(
-		string(content),
-		"/config\"\n",
-		fmt.Sprintf("/config\"\n_ \"%s\"\n", importPath))
-	err = ioutil.WriteFile(filePath, []byte(code), 0644)
-	if err != nil {
-		return fmt.Errorf("An error occurred while trying to update the main file. Error: %s", err.Error())
-	}
-
-	return nil
+func addImportToMain(moduleName string, currentPath string, importPath string) error {
+	return coreusecase.GetAddPackageImportToMain().Execute(moduleName, currentPath, importPath)
 }
 
 func addEnvironmentVariables(currentPath string) error {
-	filePath := fmt.Sprintf("%s%sconfig%senvironment.go", currentPath, toolconfig.PlatformSeparator, toolconfig.PlatformSeparator)
-	renderer := domain.GetRenderer()
-	err := renderer.BackupExistingCode(filePath)
-	if err != nil {
-		fmt.Printf("An error occurred while trying to backup the environment file. Error: %s\n", err.Error())
-		return err
-	}
-	content, err := ioutil.ReadFile(filePath)
-	if err != nil {
-		fmt.Printf("An error occurred while trying to read the environment file. Error: %s\n", err.Error())
-		return err
-	}
-
-	code := strings.ReplaceAll(
-		string(content),
-		"type Config struct {\n",
-		"type Config struct {\n//RedisAddress holds the address of the Redis cluster\nRedisAddress string\n//RedisPassword holds the password for the Redis cluster\nRedisPassword string\n")
-	code = strings.ReplaceAll(
-		code,
-		"func init() {\n",
-		"func init() {\n Values.RedisAddress = GetEnv(\"REDIS_ADDRESS\", \"\")\n Values.RedisPassword = GetEnv(\"REDIS_PASSWORD\", \"\")\n")
-
-	err = ioutil.WriteFile(filePath, []byte(code), 0644)
+	err := coreusecase.GetAddEnvironmentVariable().Execute(currentPath, "RedisAddress", "string", "`env:\"REDIS_ADDRESS\" envDefault:\"\"`")
 	if err != nil {
 		fmt.Printf("An error occurred while trying to update the environment file. Error: %s\n", err.Error())
 		return err
 	}
-
-	return nil
+	return coreusecase.GetAddEnvironmentVariable().Execute(currentPath, "RedisPassword", "string", "`env:\"REDIS_PASSWORD\" envDefault:\"\"`")
 }
 
 // RenderredisinitTemplate renders the templates defined to the redisinit command with the proper variables
@@ -117,7 +50,7 @@ func RenderredisinitTemplate(args []string) error {
 
 	err = addComponentConstantToContext(
 		currentPath,
-		"Cache = \"Cache\"")
+		"Cache")
 	if err != nil {
 		fmt.Println(err.Error())
 		return err
@@ -125,13 +58,14 @@ func RenderredisinitTemplate(args []string) error {
 
 	err = addComponentConstantToContext(
 		currentPath,
-		"Lock = \"Lock\"")
+		"Lock")
 	if err != nil {
 		fmt.Println(err.Error())
 		return err
 	}
 
 	err = addImportToMain(
+		moduleName,
 		currentPath,
 		fmt.Sprintf("%s/gateway/redis", moduleName))
 	if err != nil {

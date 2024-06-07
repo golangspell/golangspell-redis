@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 
+	_ "github.com/golangspell/golangspell-core/gateway/template"
+	_ "github.com/golangspell/golangspell-core/usecase"
+
 	"github.com/golangspell/golangspell-redis/cmd"
 	_ "github.com/golangspell/golangspell-redis/config"
 	_ "github.com/golangspell/golangspell-redis/gateway/customlog"
