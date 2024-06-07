@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"context"
 	"time"
 
 	"github.com/bsm/redislock"
@@ -9,12 +10,12 @@ import (
 	"{{.ModuleName}}/domain"
 )
 
-//RedisLock is a wrapper for bsm/redislock Client
+// RedisLock is a wrapper for bsm/redislock Client
 type RedisLock struct {
 	client *redislock.Client
 }
 
-//ObtainLock with the specified properties on Redis
+// ObtainLock with the specified properties on Redis
 func (r *RedisLock) ObtainLock(key string, duration time.Duration) (domain.Lock, error) {
 	logger := config.GetLogger
 	defer logger().Sync()

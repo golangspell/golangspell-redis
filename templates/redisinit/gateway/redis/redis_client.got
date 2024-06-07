@@ -1,16 +1,17 @@
 package redis
 
 import (
+	"context"
 	"time"
 
 	"{{.ModuleName}}/domain"
 
-	"github.com/go-redis/redis/v9"
+	"github.com/redis/go-redis/v9"
 	"{{.ModuleName}}/appcontext"
 	"{{.ModuleName}}/config"
 )
 
-//RedisClient is a wrapper for go-redis Client 
+// RedisClient is a wrapper for go-redis Client
 type RedisClient struct {
 	client *redis.Client
 }
