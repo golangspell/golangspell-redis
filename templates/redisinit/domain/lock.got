@@ -1,22 +1,23 @@
 package domain
 
 import (
+	"context"
 	"time"
 
 	"{{.ModuleName}}/appcontext"
 )
 
-//Locker resource specification
+// Locker resource specification
 type Locker interface {
 	ObtainLock(key string, duration time.Duration) (Lock, error)
 }
 
-//Lock instance specification, returned by the method ObtainLock(key string, duration time.Duration) (Lock, error)
+// Lock instance specification, returned by the method ObtainLock(key string, duration time.Duration) (Lock, error)
 type Lock interface {
 	Release(ctx context.Context) error
 }
 
-//GetLocker gets the current locker instance available in the application context
+// GetLocker gets the current locker instance available in the application context
 func GetLocker() Locker {
 	return appcontext.Current.Get(appcontext.Lock).(Locker)
 }
